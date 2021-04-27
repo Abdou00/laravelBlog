@@ -25,9 +25,6 @@ class CreatePostsTable extends Migration
             $table->text('meta_keyword');
             $table->boolean('active')->default(false);
             $table->string('image')->nullable();
-            /**
-             * Un post peut avoir plusieurs tags et un tag à plusieurs posts  => ManyToMany
-             */
             $table->foreignId('user_id')
                 ->constrained()
                 ->onDelete('cascade')
