@@ -14,11 +14,15 @@
 */
 
 Route::get('/', function () { return view('welcome');})->name('home');
+Route::get('/logout')->name('logout');
 
+/*
+|--------------------------------------------------------------------------|
+| Backend                                                                  |
+|--------------------------------------------------------------------------|
+*/
 Route::prefix('admin')->group(function () {
     Route::middleware('redac')->group(function () {
         Route::name('admin')->get('/', [AdminController::class, 'index']);
     });
 });
-
-Route::get('/logout')->name('logout');
