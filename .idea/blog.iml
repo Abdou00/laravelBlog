@@ -121,5 +121,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="twitter-bootstrap" level="application" />
     <orderEntry type="library" name="admin-lte" level="application" />
+    <orderEntry type="library" name="jquery-3.5.0" level="application" />
   </component>
 </module>

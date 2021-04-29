@@ -12,7 +12,8 @@ class PostRepository
      */
     protected function queryActive()
     {
-        return Post::select('id',
+        return Post::select(
+            'id',
             'slug',
             'image',
             'title',
@@ -43,10 +44,10 @@ class PostRepository
 
     /**
      * @return mixed
-     *Les heros sont les 5 derniers articles créés ou modifiés.
+     *Les heroes sont les 5 derniers articles créés ou modifiés.
      * On charge aussi les catégories parce qu’on doit les afficher.
      */
-    public function getHeros()
+    public function getHeroes()
     {
         return $this->queryActive()->with('categories')->latest('updated_at')->take(5)->get();
     }
