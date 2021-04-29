@@ -11,12 +11,17 @@
     | routes are loaded by the RouteServiceProvider within a group which
     | contains the "web" middleware group. Now create something great!
     */
+    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => 'auth'], function () { Lfm::routes(); });
+
     Route::name('home')->get('/', [PostController::class, 'index']);
+    Route::name('category')->get('category/{category:slug}', [PostController::class, 'category']);
+    Route::name('author')->get('author/{user}', [PostController::class, 'user']);
+    Route::name('tag')->get('tag/{tag:slug}', [PostController::class, 'tag']);
 
-    Route::get('/logout')->name('logout');
-
-    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => 'auth'], function () {
-        Lfm::routes();
+    // J’ai créé un groupe parce qu’on aura d’autres routes avec ce préfixe.
+    Route::prefix('posts')->group(function () {
+        Route::name('posts.display')->get('{slug}', [PostController::class, 'show']);
+        Route::name('posts.search')->get('', [PostController::class, 'search']);
     });
     /*
     |--------------------------------------------------------------------------|

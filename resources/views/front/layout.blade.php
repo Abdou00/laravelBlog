@@ -4,9 +4,12 @@
         <!--- basic page needs
         ================================================== -->
         <meta charset="utf-8">
-        <title>{{ config('app.name') }}</title>
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <title>{{ isset($post) && $post->seo_title ? $post->seo_title :  config('app.name') }}</title>
+        <meta name="description" content="{{ isset($post) && $post->meta_description ? $post->meta_description : __(config('app.description')) }}">
+        <meta name="author" content="{{ isset($post) ? $post->user->name : __(config('app.author')) }}">
+        @if(isset($post) && $post->meta_keywords)
+            <meta name="keywords" content="{{ $post->meta_keywords }}">
+        @endif
         <!-- mobile specific metas
         ================================================== -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,208 +36,72 @@
             <div id="loader"></div>
         </div>
 
-
         <!-- header
         ================================================== -->
-        <header class="s-header">
+        <header class="s-header @unless(currentRoute('home')) s-header--opaque @endunless">
             <div class="s-header__logo">
-                <a class="logo" href="layout.blade.php">
-                    <img src="{{  asset('images/logo.svg') }}" alt="Homepage">
+                <a class="logo" href="{{ route('home') }}">
+                    <img src="{{ asset('images/logo.svg') }}" alt="Homepage">
                 </a>
             </div>
-
             <div class="row s-header__navigation">
                 <nav class="s-header__nav-wrap">
-                    <h3 class="s-header__nav-heading h6">Navigate to</h3>
-
+                    <h3 class="s-header__nav-heading h6">@lang('Navigate to')</h3>
                     <ul class="s-header__nav">
-                        <li class="current"><a href="layout.blade.php" title="">Home</a></li>
-                        <li class="has-children">
-                            <a href="#0" title="">Categories</a>
-                            <ul class="sub-menu">
-                                <li><a href="category.html">Design</a></li>
-                                <li><a href="category.html">Lifestyle</a></li>
-                                <li><a href="category.html">Photography</a></li>
-                                <li><a href="category.html">Vacation</a></li>
-                                <li><a href="category.html">Work</a></li>
-                                <li><a href="category.html">Health</a></li>
-                                <li><a href="category.html">Family</a></li>
-                                <li><a href="category.html">Relationship</a></li>
-                            </ul>
+                        <li {{ currentRoute('home') }}>
+                            <a href="{{ route('home') }}" title="">@lang('Home')</a>
                         </li>
                         <li class="has-children">
-                            <a href="#0" title="">Blog</a>
+                            <a href="#" title="">@lang('Categories')</a>
                             <ul class="sub-menu">
-                                <li><a href="single-video.html">Video Post</a></li>
-                                <li><a href="single-audio.html">Audio Post</a></li>
-                                <li><a href="single-standard.html">Standard Post</a></li>
+                                @foreach($categories as $category)
+                                    <li><a href="{{ route('category', $category->slug) }}">{{ $category->title }}</a></li>
+                                @endforeach
                             </ul>
                         </li>
-                        <li><a href="styles.html" title="">Styles</a></li>
-                        <li><a href="about.html" title="">About</a></li>
-                        <li><a href="contact.html" title="">Contact</a></li>
-                    </ul> <!-- end s-header__nav -->
-
-                    <a href="#0" title="Close Menu" class="s-header__overlay-close close-mobile-menu">Close</a>
-                </nav> <!-- end s-header__nav-wrap -->
-            </div> <!-- end s-header__navigation -->
-
-            <a class="s-header__toggle-menu" href="#0" title="Menu"><span>Menu</span></a>
-
+                    </ul>
+                    <a href="#0" title="@lang('Close Menu')" class="s-header__overlay-close close-mobile-menu">@lang('Close')</a>
+                </nav>
+            </div>
+            <a class="s-header__toggle-menu" href="#0" title="@lang('Menu')"><span>@lang('Menu')</span></a>
             <div class="s-header__search">
                 <div class="s-header__search-inner">
                     <div class="row wide">
-                        <form role="search" method="get" class="s-header__search-form" action="#">
+                        <form role="search" method="get" class="s-header__search-form" action="{{ Route('posts.search') }}">
                             <label>
-                                <span class="h-screen-reader-text">Search for:</span>
-                                <input type="search" class="s-header__search-field" placeholder="Search for..." value="" name="s" title="Search for:" autocomplete="off">
+                                <span class="h-screen-reader-text">@lang('Search for:')</span>
+                                <input id="search" type="search" name="search" class="s-header__search-field" placeholder="@lang('Search for...')" title="@lang('Search for:')" autocomplete="off">
                             </label>
                             <input type="submit" class="s-header__search-submit" value="Search">
                         </form>
-
-                        <a href="#0" title="Close Search" class="s-header__overlay-close">Close</a>
-                    </div> <!-- end row -->
-                </div> <!-- s-header__search-inner -->
-            </div> <!-- end s-header__search wrap -->
-
+                        <a href="#0" title="@lang('Close Search')" class="s-header__overlay-close">@lang('Close')</a>
+                    </div>
+                </div>
+            </div>
             <a class="s-header__search-trigger" href="#">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.982 17.983"><path fill="#010101" d="M12.622 13.611l-.209.163A7.607 7.607 0 017.7 15.399C3.454 15.399 0 11.945 0 7.7 0 3.454 3.454 0 7.7 0c4.245 0 7.699 3.454 7.699 7.7a7.613 7.613 0 01-1.626 4.714l-.163.209 4.372 4.371-.989.989-4.371-4.372zM7.7 1.399a6.307 6.307 0 00-6.3 6.3A6.307 6.307 0 007.7 14c3.473 0 6.3-2.827 6.3-6.3a6.308 6.308 0 00-6.3-6.301z"/></svg>
             </a>
-        </header> <!-- end s-header -->
-
+        </header>
 
         <!-- hero
         ================================================== -->
-        @yield('heroe')
         <section id="hero" class="s-hero">
-
-            <div class="s-hero__slider">
-
-                <div class="s-hero__slide">
-
-                    <div class="s-hero__slide-bg" style="background-image: url('images/slide1-bg-3000.jpg');"></div>
-
-                    <div class="row s-hero__slide-content animate-this">
-                        <div class="column">
-                            <div class="s-hero__slide-meta">
-                                <span class="cat-links">
-                                    <a href="#0">Lifestyle</a>
-                                    <a href="#0">Design</a>
-                                </span>
-                                <span class="byline">
-                                    Posted by
-                                    <span class="author">
-                                        <a href="#0">Jonathan Doe</a>
-                                    </span>
-                                </span>
-                            </div>
-                            <h1 class="s-hero__slide-text">
-                                <a href="#0">
-                                    Tips and Ideas to Help You Start Freelancing.
-                                </a>
-                            </h1>
-                        </div>
-                    </div>
-
-                </div> <!-- end s-hero__slide -->
-
-                <div class="s-hero__slide">
-
-                    <div class="s-hero__slide-bg" style="background-image: url('images/slide2-bg-3000.jpg');"></div>
-
-                    <div class="row s-hero__slide-content animate-this">
-                        <div class="column">
-                            <div class="s-hero__slide-meta">
-                                <span class="cat-links">
-                                    <a href="#0">Work</a>
-                                </span>
-                                <span class="byline">
-                                    Posted by
-                                    <span class="author">
-                                        <a href="#0">Juan Dela Cruz</a>
-                                    </span>
-                                </span>
-                            </div>
-                            <h1 class="s-hero__slide-text">
-                                <a href="#0">
-                                    Minimalism: The Art of Keeping It Simple.
-                                </a>
-                            </h1>
-                        </div>
-                    </div>
-
-                </div> <!-- end s-hero__slide -->
-
-                <div class="s-hero__slide"">
-
-                    <div class="s-hero__slide-bg" style="background-image: url('images/slide3-bg-3000.jpg');"></div>
-
-                    <div class="row s-hero__slide-content animate-this">
-                        <div class="column">
-                            <div class="s-hero__slide-meta">
-                                <span class="cat-links">
-                                    <a href="#0">Health</a>
-                                    <a href="#0">Lifestyle</a>
-                                </span>
-                                <span class="byline">
-                                    Posted by
-                                    <span class="author">
-                                        <a href="#0">Jane Doe</a>
-                                    </span>
-                                </span>
-                            </div>
-                            <h1 class="s-hero__slide-text">
-                                <a href="#0">
-                                    10 Reasons Why Being in Nature Is Good For You.
-                                </a>
-                            </h1>
-                        </div>
-                    </div>
-
-                </div> <!-- end s-hero__slide -->
-
-            </div> <!-- end s-hero__slider -->
-
-            <div class="s-hero__social hide-on-mobile-small">
-                <p>Follow</p>
-                <span></span>
-                <ul class="s-hero__social-icons">
-                    <li><a href="#0"><i class="fab fa-facebook-f" aria-hidden="true"></i></a></li>
-                    <li><a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i></a></li>
-                    <li><a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i></a></li>
-                    <li><a href="#0"><i class="fab fa-dribbble" aria-hidden="true"></i></a></li>
-                </ul>
-            </div> <!-- end s-hero__social -->
-
-            <div class="nav-arrows s-hero__nav-arrows">
-                <button class="s-hero__arrow-prev">
-                    <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M1.5 7.5l4-4m-4 4l4 4m-4-4H14" stroke="currentColor"></path></svg>
-                </button>
-                <button class="s-hero__arrow-next">
-                   <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M13.5 7.5l-4-4m4 4l-4 4m4-4H1" stroke="currentColor"></path></svg>
-                </button>
-            </div> <!-- end s-hero__arrows -->
-
+            @yield('hero')
         </section> <!-- end s-hero -->
 
         <!-- content
         ================================================== -->
-        <section class="s-content s-content--no-top-padding">
+        <section class="s-content @if(currentRoute('home')) s-content--no-top-padding @endif">
             @yield('main')
-
         </section> <!-- end s-content -->
 
 
         <!-- footer
         ================================================== -->
         <footer class="s-footer">
-
             <div class="s-footer__main">
-
                 <div class="row">
-
                     <div class="column large-3 medium-6 tab-12 s-footer__info">
-
                         <h5>About Our Site</h5>
 
                         <p>
@@ -244,11 +111,9 @@
                         exercitation nulla. Lorem ipsum In reprehenderit
                         commodo aliqua irure.
                         </p>
-
                     </div> <!-- end s-footer__info -->
 
                     <div class="column large-2 medium-3 tab-6 s-footer__site-links">
-
                         <h5>Site Links</h5>
 
                         <ul>
@@ -258,11 +123,9 @@
                             <li><a href="#0">Terms</a></li>
                             <li><a href="#0">Privacy Policy</a></li>
                         </ul>
-
                     </div> <!-- end s-footer__site-links -->
 
                     <div class="column large-2 medium-3 tab-6 s-footer__social-links">
-
                         <h5>Follow Us</h5>
 
                         <ul>
@@ -272,33 +135,22 @@
                             <li><a href="#0">Pinterest</a></li>
                             <li><a href="#0">Instagram</a></li>
                         </ul>
-
                     </div> <!-- end s-footer__social links -->
 
                     <div class="column large-3 medium-6 tab-12 s-footer__subscribe">
-
                         <h5>Sign Up for Newsletter</h5>
 
                         <p>Signup to get updates on articles, interviews and events.</p>
 
                         <div class="subscribe-form">
-
                             <form id="mc-form" class="group" novalidate="true">
-
                                 <input type="email" value="" name="dEmail" class="email" id="mc-email" placeholder="Your Email Address" required="">
-
                                 <input type="submit" name="subscribe" value="subscribe" >
-
                                 <label for="mc-email" class="subscribe-message"></label>
-
                             </form>
-
                         </div>
-
                     </div> <!-- end s-footer__subscribe -->
-
                 </div> <!-- end row -->
-
             </div> <!-- end s-footer__main -->
 
             <div class="s-footer__bottom">
@@ -317,9 +169,7 @@
                     </a>
                 </div> <!-- end ss-go-top -->
             </div> <!-- end s-footer__bottom -->
-
         </footer> <!-- end s-footer -->
-
 
         <!-- Java Script
         ================================================== -->
